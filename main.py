@@ -9,10 +9,16 @@ BASE_DIR = "Medication Photos"
 
 # Define augmentation pipeline
 augmentations = A.Compose([
-    A.Rotate(limit=15, p=0.7),  # Rotate ±15 degrees
+    A.Rotate(limit=180, p=0.8),  # Full rotation range since pills can be at any angle
+    A.Affine(
+        scale=(0.8, 1.2),  # Scale variation (same as scale_limit=0.2)
+        translate_percent={'x': (-0.1, 0.1), 'y': (-0.1, 0.1)},  # Position variation
+        rotate=0,  # No rotation here since we have separate rotation
+        p=0.5
+    ),
     A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
     A.GaussNoise(p=0.3),  # Add noise
-    A.HorizontalFlip(p=0.5),
+    A.Perspective(scale=(0.05, 0.1), p=0.4),  # Slight perspective changes
     A.Resize(height=224, width=224, p=1.0),  # Resize to fixed size
 ])
 
